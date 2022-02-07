@@ -29,3 +29,8 @@ Example wavetable plot:
     --flip                Reverses the wave order in the wavetable.
     --no-thumb            Set this to skip the thumbnail plot.
     --help                Show this message and exit.
+
+## Installing
+The simplest way is to install the dependencies using pip
+
+    > pip install -r requirements.txt
