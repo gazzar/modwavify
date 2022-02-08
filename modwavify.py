@@ -58,12 +58,13 @@ def waterfall(filepath, wavetable):
 
 
 @click.command()
+@click.option('--average', is_flag=True, default=False, help='Chooses waves from input by local-average instead of by stride.')
 @click.option('--local/--no-local', default=True, help='Normalize each wave to local (default) or global max.')
 @click.option('--flip', is_flag=True, default=False, help='Reverses the wave order in the wavetable.')
 @click.option('--crop', is_flag=True, default=False, help='Crop to first 64 waves instead of averaging.')
 @click.option('--no-thumb', is_flag=True, default=False, help='Set this to skip the thumbnail plot.')
 @click.argument('filepath', type=click.Path(exists=True))
-def main(filepath, local, flip, crop, no_thumb):
+def main(filepath, average, local, flip, crop, no_thumb):
     """Downsamples a 2048-sample-per-wave wavetable to be modwave compatible."""
 
     x, _Fs = sf.read(filepath)
@@ -92,7 +93,10 @@ def main(filepath, local, flip, crop, no_thumb):
             factor = int(wave_count / 64)
             x = x[:factor * 64]
             x.shape = (-1, factor, WAVELENGTH)
-            x = x.sum(axis=1)
+            if average:
+                x = x.sum(axis=1)
+            else:
+                x = x[:, 0]
             wave_count, _ = x.shape
             print(f"{output_filepath}: reduced by factor {factor} to {wave_count} waves")
 

@@ -21,12 +21,16 @@ Example wavetable plot:
 ![wavetable plot](wavetable.png)
 
     > python modwavify.py --help
+    Usage: modwavify.py [OPTIONS] FILEPATH
 
     Downsamples a 2048-sample-per-wave wavetable to be modwave compatible.
 
     Options:
+    --average             Chooses waves from input by local-average instead of
+                            by stride.
     --local / --no-local  Normalize each wave to local (default) or global max.
     --flip                Reverses the wave order in the wavetable.
+    --crop                Crop to first 64 waves instead of averaging.
     --no-thumb            Set this to skip the thumbnail plot.
     --help                Show this message and exit.
 
