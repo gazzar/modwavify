@@ -52,19 +52,20 @@ def waterfall(filepath, wavetable):
     wave_count, wavelength = wavetable.shape
     X, Y = np.mgrid[:wave_count, :wavelength]
 
-    ax.plot_wireframe(X, Y, wavetable, cstride=2048, lw=0.5, color='k')
+    ax.plot_wireframe(X, Y, wavetable, cstride=wavelength, lw=0.5, color='k')
     fig.subplots_adjust(top=1.1, bottom=-0.15, left=-0.1, right=1.1)
     plt.savefig(filepath)
 
 
 @click.command()
-@click.option('--average', is_flag=True, default=False, help='Chooses waves from input by local-average instead of by stride.')
+@click.option('--average', '-a', is_flag=True, default=False, help='Chooses waves from input by local-average instead of by stride.')
 @click.option('--local/--no-local', default=True, help='Normalize each wave to local (default) or global max.')
-@click.option('--flip', is_flag=True, default=False, help='Reverses the wave order in the wavetable.')
-@click.option('--crop', is_flag=True, default=False, help='Crop to first 64 waves instead of averaging.')
-@click.option('--no-thumb', is_flag=True, default=False, help='Set this to skip the thumbnail plot.')
+@click.option('--flip', '-f', is_flag=True, default=False, help='Reverses the wave order in the wavetable.')
+@click.option('--crop', '-c', is_flag=True, default=False, help='Crop to first 64 waves instead of averaging.')
+@click.option('--wavelength', '-w', default=2048, type=int, help='Samples-per-wave: 2048 (default).')
+@click.option('--no-thumb', '-n', is_flag=True, default=False, help='Set this to skip the thumbnail plot.')
 @click.argument('filepath', type=click.Path(exists=True))
-def main(filepath, average, local, flip, crop, no_thumb):
+def main(filepath, average, local, flip, crop, wavelength, no_thumb):
     """Downsamples a 2048-sample-per-wave wavetable to be modwave compatible."""
 
     x, _Fs = sf.read(filepath)
@@ -77,10 +78,9 @@ def main(filepath, average, local, flip, crop, no_thumb):
     path = Path(filepath)
     output_filepath = path.with_name(path.stem + '_mw' + path.suffix)
 
-    WAVELENGTH = 2048
     # Start by truncating, if necessary, to a wave boundary; usually this is idempotent
-    x = x[:int(x.size / WAVELENGTH) * WAVELENGTH]
-    x.shape = (-1, WAVELENGTH)
+    x = x[:int(x.size / wavelength) * wavelength]
+    x.shape = (-1, wavelength)
 
     if crop:
         x = x[:64]
@@ -92,7 +92,7 @@ def main(filepath, average, local, flip, crop, no_thumb):
             # by a factor of 4, but the code supports other factors for other wavetable sources
             factor = int(wave_count / 64)
             x = x[:factor * 64]
-            x.shape = (-1, factor, WAVELENGTH)
+            x.shape = (-1, factor, wavelength)
             if average:
                 x = x.sum(axis=1)
             else:
