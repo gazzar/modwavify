@@ -26,13 +26,15 @@ Example wavetable plot:
     Downsamples a 2048-sample-per-wave wavetable to be modwave compatible.
 
     Options:
-    --average             Chooses waves from input by local-average instead of
-                            by stride.
-    --local / --no-local  Normalize each wave to local (default) or global max.
-    --flip                Reverses the wave order in the wavetable.
-    --crop                Crop to first 64 waves instead of averaging.
-    --no-thumb            Set this to skip the thumbnail plot.
-    --help                Show this message and exit.
+    -a, --average             Chooses waves from input by local-average instead
+                                of by stride.
+    --local / --no-local      Normalize each wave to local (default) or global
+                                max.
+    -f, --flip                Reverses the wave order in the wavetable.
+    -c, --crop                Crop to first 64 waves instead of averaging.
+    -w, --wavelength INTEGER  Samples-per-wave: 2048 (default).
+    -n, --no-thumb            Set this to skip the thumbnail plot.
+    --help                    Show this message and exit.
 
 ## Installing
 The simplest way is to install the dependencies using pip
